@@ -5,6 +5,8 @@ from std_msgs.msg import String
 
 import pandas as pd
 import numpy as np
+#import seaborn as sns
+import matplotlib.pyplot as plt
 
 import sys
 sys.path.append('src/rpg_trajectory_evaluation/src/rpg_trajectory_evaluation/')
@@ -69,13 +71,31 @@ def calculate_error(df_aligned, df_comp):
 
     return df_error
 
+def plot_histogram(df):
+    # Group by 'mission' and calculate the squared error for each axis
+    grouped_df = df.groupby('mission').agg({
+        'error_x': 'mean',
+        'error_y': 'mean',
+        'error_z': 'mean'
+    })
+
+    # Calculate the squared error for each mission
+    grouped_df['average_squared_error'] = grouped_df['error_x']**2 + grouped_df['error_y']**2 + grouped_df['error_z']**2
+
+    # Plot histogram
+    plt.hist(grouped_df['average_squared_error'], bins=10, edgecolor='black')
+    plt.xlabel('Average Squared Error')
+    plt.ylabel('Frequency')
+    plt.title('Histogram of Average Squared Error per Mission')
+    plt.show()
+
 
 def main():
 
-    df_align = pd.read_csv('/home/michbaum/Projects/maplab/data/loopclosure/lc_edges.csv', sep=',',names=['mission','t_x','t_y','t_z','s_x', 's_y','s_z'])
-    df_gt = pd.read_csv('/home/michbaum/Projects/optag_EH/data/20240111_123911/groundtruth.csv', sep=',', usecols=[u'xPosition',u'yPosition',u'zPosition'])
+    df_align = pd.read_csv('/home/michbaum/Projects/maplab/data/loopclosure/results.csv', sep=',',names=['mission','t_x','t_y','t_z','s_x', 's_y','s_z'])
+    df_gt = pd.read_csv('/home/michbaum/Projects/optag_EH/data/maze_drift_aware_eval/groundtruth.csv', sep=',', usecols=[u'xPosition',u'yPosition',u'zPosition'])
     df_gt.rename(columns={'xPosition':'gt_x','yPosition':'gt_y','zPosition':'gt_z'}, inplace=True)
-    df_drifty = pd.read_csv('/home/michbaum/Projects/optag_EH/data/20240111_123911/traj_estimate.csv', sep=',',usecols=[u'xPosition',u'yPosition',u'zPosition'])
+    df_drifty = pd.read_csv('/home/michbaum/Projects/optag_EH/data/maze_drift_aware_eval/traj_estimate.csv', sep=',',usecols=[u'xPosition',u'yPosition',u'zPosition'])
     df_drifty.rename(columns={'xPosition':'t_x','yPosition':'t_y','zPosition':'t_z'}, inplace=True)
 
     #df_gt = pd.read_csv('/home/michbaum/Projects/optag_EH/data/20240111_174643/groundtruth.csv', sep=',')
@@ -96,6 +116,8 @@ def main():
 
     #print(df_aligned.head())
     df_error = calculate_error(df_aligned, df_comp)
+
+    #plot_histogram(df_error)
     print(df_error)
 
 
