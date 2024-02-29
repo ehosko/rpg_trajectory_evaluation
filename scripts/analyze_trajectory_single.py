@@ -45,6 +45,7 @@ def analyze_multiple_trials(results_dir, est_type, n_trials,
                                                 match_base_fn)
         traj = Trajectory(
             results_dir, est_type=est_type, suffix=suffix,
+            nm_gt='stamped_groundtruth' + suffix + '.txt',
             nm_est=kNsToEstFnMapping[est_type] + suffix + '.'+kFnExt,
             nm_matches=match_base_fn,
             preset_boxplot_distances=preset_boxplot_distances,

@@ -70,7 +70,8 @@ class Trajectory:
         if os.path.exists(self.eval_cfg):
             print("Find evaluation configuration, will overwrite default.")
             with open(self.eval_cfg, 'r') as f:
-                eval_cfg = yaml.load(f, Loader=yaml.FullLoader)
+                #eval_cfg = yaml.load(f, Loader=yaml.FullLoader)
+                eval_cfg = yaml.load(f)
                 print("The current evaluation configuration is "
                       "{0}".format(eval_cfg))
                 self.align_type = eval_cfg['align_type']

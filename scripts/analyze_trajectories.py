@@ -30,8 +30,11 @@ def spec(N):
     t = np.linspace(-510, 510, N)                                              
     return np.round(np.clip(np.stack([-t, 510-np.abs(t), t], axis=1), 0, 255)).astype("float32")/255
 
-PALLETE = spec(20)
+PALLETE = spec(5)
 
+PALLETE = ['b', 'g', 'r', 'c', 'k', 'y', 'm']
+
+PALLETE = ['firebrick', 'mediumvioletred', 'forestgreen', 'skyblue', 'goldenrod']
 
 def collect_odometry_error_per_dataset(dataset_multierror_list,
                                        dataset_names):
@@ -98,6 +101,7 @@ def plot_odometry_error_per_dataset(dataset_rel_err, dataset_names, algorithm_na
         for v in algorithm_names:
             config_labels.append(plot_settings['algo_labels'][v])
             config_colors.append(plot_settings['algo_colors'][v])
+            print("  - {0}: {1}".format(v, plot_settings['algo_colors'][v]))
 
         fig = plt.figure(figsize=(12, 3))
         ax = fig.add_subplot(
